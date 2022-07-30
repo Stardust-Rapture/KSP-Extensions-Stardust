@@ -13,7 +13,7 @@ namespace StardustUtilities
 
         private Transform transformTarget;
         
-        public override void OnStart(PartModule.StartState state)D:\Laythe_Mantle\Source\Repos\Stardust-Rapture\KSP_E
+        public override void OnStart(PartModule.StartState state)
         {
             mirrorScaleAxis.Normalize();
             if(mirrorScaleAxis != Vector3.zero)
