@@ -13,13 +13,12 @@ namespace StardustUtilities
 
         [KSPField(isPersistant = true)]
         public bool isMirrorApplied;
-        
+
         public Transform transformTarget;
 
         public override void OnStart(PartModule.StartState state)
         {
             mirrorScaleAxis.Normalize();
-            isMirrorApplied = false;
 
             if(mirrorScaleAxis != Vector3.zero)
             {
@@ -30,68 +29,78 @@ namespace StardustUtilities
                 else
                     Debug.LogWarning("TargetedMirroring debug Checkpoint 0 failed.");
             }
+            if (isMirrorApplied == true)
+            {
+                Debug.LogWarning("Flight State mirror checkpoint");
+                PerformMirror();
+            }
         }
 
         public void Start()
         {
-            mirrorScaleAxis.Normalize();
-
             Debug.Log("TargetedMirroring debug message. Checkpoint 1.");
-            // Debug.Log("TargetedMirroring debug message. mirrorScaleAxis = " + mirrorScaleAxis.ToString());
-            if (CheckMirroringState() && isMirrorApplied == false)
-            {
-                part.OnEditorAttach += ApplyTargetedMirroring;
-                part.OnEditorDetach += ReleaseTargetedMirroring;
-            }
-            else if(CheckMirroringState() && isMirrorApplied == true)
-            {
-                ApplyTargetedMirroring();
-            }
+            Debug.Log("TargetedMirroring debug. appliedScaling = " + transformTarget.localScale.ToString());
+
+            part.OnEditorAttach += ApplyTargetedMirroring;
+            part.OnEditorDetach += ReleaseTargetedMirroring;
         }
 
         private bool CheckMirroringState()
         {
             if (part.symMethod == SymmetryMethod.Mirror && part.symmetryCounterparts.Count > 0)
             {
-                Debug.Log("TargetedMirroring Checkpoint 2: Mirror state checked.");
+                Debug.Log("TargetedMirroring Checkpoint 2: Mirror state checked TRUE.");
                 return true;
             }
             else
             {
+                Debug.Log("TargetedMirroring Checkpoint 2: Mirror state checked FALSE.");
+                isMirrorApplied = false;
                 return false;
             }
         }
 
-        private void ApplyTargetedMirroring()
-        { 
-            Debug.Log("TargetedMirroring debug message. Checkpoint 5 partSymCount: " + part.symmetryCounterparts.Count.ToString());
-            Debug.Log("MirrorScaleAxis: " + mirrorScaleAxis.ToString());
-            Debug.Log("Targeted Mirroring Debug. isMirrorApplied: " + isMirrorApplied.ToString());
-            // Debug.Log("Debugging Symmetry Part at attPos0.x = " + part.attPos0.x.ToString());
-            Debug.LogWarning("Calculated Vector3.Dot = ");
+        /*
+        private void InitializeTargetedMirroring()
+        {
+            Debug.LogWarning("Checkpoint 4. Calculated Vector3.Dot = ");
             Debug.Log(Vector3.Dot(EditorLogic.SortedShipList[0].transform.right, part.transform.position - EditorLogic.SortedShipList[0].transform.position).ToString());
 
-            if (CheckMirroringState()  && Vector3.Dot(EditorLogic.SortedShipList[0].transform.TransformDirection(Vector3.right), part.transform.position - EditorLogic.SortedShipList[0].transform.position) < 0 )
+            if (CheckMirroringState() && Vector3.Dot(EditorLogic.SortedShipList[0].transform.TransformDirection(Vector3.right), part.transform.position - EditorLogic.SortedShipList[0].transform.position) < 0)
             {
-                // Vector3.Dot(EditorLogic.SortedShipList[0].transform.right, part.transform.position - EditorLogic.SortedShipList[0].transform.position) < 0
+                part.OnEditorAttach += PerformMirror;
+                part.OnEditorDetach += ReleaseTargetedMirroring;
+            }
 
-                Debug.LogWarning("ATTEMPTING TRANSFORM MIRROR on " + part.partInfo.name.ToString());
+        }
+        */
+        
+        private void ApplyTargetedMirroring()
+        { 
+            Debug.Log("MirrorScaleAxis: " + mirrorScaleAxis.ToString());
+            Debug.Log("Targeted Mirroring Debug. isMirrorApplied: " + isMirrorApplied.ToString());
+            Debug.LogWarning("Calculated Vector3.Dot = " +
+                Vector3.Dot(EditorLogic.SortedShipList[0].transform.right, part.transform.position - EditorLogic.SortedShipList[0].transform.position).ToString() );
 
-                Part mirrorPart = part.symmetryCounterparts[0];
-                transformTarget = mirrorPart.FindModelTransform(mirrorTarget);
+            if (CheckMirroringState() && Vector3.Dot(EditorLogic.SortedShipList[0].transform.TransformDirection(Vector3.right), part.transform.position - EditorLogic.SortedShipList[0].transform.position) > 0 )
+            {
+                transformTarget = part.FindModelTransform(mirrorTarget);
 
                 if (transformTarget != null)
                     PerformMirror();
+
+                return;
             }
 
+            isMirrorApplied = false;
+            
         }
 
         private void ReleaseTargetedMirroring()
         {
-            isMirrorApplied = true;
+            isMirrorApplied = false;
             Debug.Log("Targeted Mirror Released.");
         }
-
         private void PerformMirror()
         {
             Vector3 targetTransformScale = transformTarget.localScale;
