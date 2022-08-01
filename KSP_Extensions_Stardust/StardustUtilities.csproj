@@ -55,6 +55,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ModuleTargetedMirroredTransformRotation.cs" />
     <Compile Include="ModuleTargetedTransformMirror.cs" />
   </ItemGroup>
   <ItemGroup>
