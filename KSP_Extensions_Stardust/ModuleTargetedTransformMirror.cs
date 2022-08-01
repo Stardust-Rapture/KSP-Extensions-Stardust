@@ -25,21 +25,21 @@ namespace StardustUtilities
                 transformTarget = CheckTransform(mirrorTarget);
 
                 if (transformTarget != null)
-                    Debug.LogWarning("TargetedMirroring debug Checkpoint 0 passed.");
+                    Debug.LogWarning("TargetedMirroring debug Checkpoint 0 passed. Transform '" + mirrorTarget + "' found.");
                 else
-                    Debug.LogWarning("TargetedMirroring debug Checkpoint 0 failed.");
+                    Debug.LogWarning("TargetedMirroring debug Checkpoint 0 failed. No transform '" + mirrorTarget + "' found.");
             }
             if (isMirrorApplied == true)
             {
-                Debug.LogWarning("Flight State mirror checkpoint");
+                // Debug.LogWarning("Flight State mirror checkpoint");
                 PerformMirror();
             }
         }
 
         public void Start()
         {
-            Debug.Log("TargetedMirroring debug message. Checkpoint 1.");
-            Debug.Log("TargetedMirroring debug. appliedScaling = " + transformTarget.localScale.ToString());
+            // Debug.Log("TargetedMirroring debug message. Checkpoint 1.");
+            // Debug.Log("TargetedMirroring debug. appliedScaling = " + transformTarget.localScale.ToString());
 
             part.OnEditorAttach += ApplyTargetedMirroring;
             part.OnEditorDetach += ReleaseTargetedMirroring;
@@ -49,38 +49,23 @@ namespace StardustUtilities
         {
             if (part.symMethod == SymmetryMethod.Mirror && part.symmetryCounterparts.Count > 0)
             {
-                Debug.Log("TargetedMirroring Checkpoint 2: Mirror state checked TRUE.");
+                // Debug.Log("TargetedMirroring Checkpoint 2: Mirror state checked TRUE.");
                 return true;
             }
             else
             {
-                Debug.Log("TargetedMirroring Checkpoint 2: Mirror state checked FALSE.");
+                // Debug.Log("TargetedMirroring Checkpoint 2: Mirror state checked FALSE.");
                 isMirrorApplied = false;
                 return false;
             }
         }
 
-        /*
-        private void InitializeTargetedMirroring()
-        {
-            Debug.LogWarning("Checkpoint 4. Calculated Vector3.Dot = ");
-            Debug.Log(Vector3.Dot(EditorLogic.SortedShipList[0].transform.right, part.transform.position - EditorLogic.SortedShipList[0].transform.position).ToString());
-
-            if (CheckMirroringState() && Vector3.Dot(EditorLogic.SortedShipList[0].transform.TransformDirection(Vector3.right), part.transform.position - EditorLogic.SortedShipList[0].transform.position) < 0)
-            {
-                part.OnEditorAttach += PerformMirror;
-                part.OnEditorDetach += ReleaseTargetedMirroring;
-            }
-
-        }
-        */
-        
         private void ApplyTargetedMirroring()
         { 
-            Debug.Log("MirrorScaleAxis: " + mirrorScaleAxis.ToString());
-            Debug.Log("Targeted Mirroring Debug. isMirrorApplied: " + isMirrorApplied.ToString());
-            Debug.LogWarning("Calculated Vector3.Dot = " +
-                Vector3.Dot(EditorLogic.SortedShipList[0].transform.right, part.transform.position - EditorLogic.SortedShipList[0].transform.position).ToString() );
+            // Debug.Log("MirrorScaleAxis: " + mirrorScaleAxis.ToString());
+            // Debug.Log("Targeted Mirroring Debug. isMirrorApplied: " + isMirrorApplied.ToString());
+            // Debug.LogWarning("Calculated Vector3.Dot = " +
+            //    Vector3.Dot(EditorLogic.SortedShipList[0].transform.right, part.transform.position - EditorLogic.SortedShipList[0].transform.position).ToString() );
 
             if (CheckMirroringState() && Vector3.Dot(EditorLogic.SortedShipList[0].transform.TransformDirection(Vector3.right), part.transform.position - EditorLogic.SortedShipList[0].transform.position) > 0 )
             {
@@ -93,19 +78,18 @@ namespace StardustUtilities
             }
 
             isMirrorApplied = false;
-            
         }
 
         private void ReleaseTargetedMirroring()
         {
             isMirrorApplied = false;
-            Debug.Log("Targeted Mirror Released.");
+            // Debug.Log("Targeted Mirror Released.");
         }
         private void PerformMirror()
         {
             Vector3 targetTransformScale = transformTarget.localScale;
-            Debug.Log("TargetedMirroring debug. Checkpoint 6 transformTarget: " + transformTarget.ToString());
-            Debug.Log("Mirror Target targetTransformScale: " + targetTransformScale.ToString());
+            // Debug.Log("TargetedMirroring debug. Checkpoint 6 transformTarget: " + transformTarget.ToString());
+            // Debug.Log("Mirror Target targetTransformScale: " + targetTransformScale.ToString());
 
             if (mirrorScaleAxis.x != 0f)
                 targetTransformScale.x *= -1f;
@@ -114,7 +98,7 @@ namespace StardustUtilities
             if (mirrorScaleAxis.z != 0f)
                 targetTransformScale.z *= -1f;
 
-            Debug.Log("APPLIED AXIS MIRRORING. Debug: " + targetTransformScale.ToString());
+            // Debug.Log("APPLIED AXIS MIRRORING. Debug: " + targetTransformScale.ToString());
             Debug.Log(part.symmetryCounterparts[0].ToString());
 
             transformTarget.localScale = targetTransformScale;
